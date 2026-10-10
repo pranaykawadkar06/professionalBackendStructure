@@ -8,10 +8,11 @@ import roleMiddleware from "../middleware/roleMiddleware.js";
 import validatePasswordField from "../middleware/validatePasswordField.js";
 import validateEmailField from "../middleware/validateEmailField.js";
 import loginLimiter from "../middleware/loginLimiter.js";
+import signupLimiter from "../middleware/signupLimiter.js";
 
 const router = express.Router();
 
-router.post("/signup", validateSignup, signup);
+router.post("/signup", signupLimiter, validateSignup, signup);
 
 router.post("/login", validateLogin, loginLimiter, login);
 

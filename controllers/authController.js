@@ -33,7 +33,7 @@ const login = async(req, res, next) => {
     try {
         const {email, password} = req.body;
     
-        const user = await User.findOne({email});
+        const user = await User.findOne({email}).select("+password");
 
         if(!user){
             return next(
@@ -146,7 +146,7 @@ const logout = (req, res, next) => {
 const forgotPassword = async(req, res, next) => {
     try {
         const {email} = req.body;
-        const user = await User.findOne({email});
+        const user = await User.findOne({email}).select("+passwordResetToken +passwordResetExpires");
 
         if(!user){
             return next(
@@ -194,7 +194,7 @@ const resetPassword = async(req, res, next) => {
         const user = await User.findOne({
             passwordResetToken: hashedToken, 
             passwordResetExpires: { $gt: Date.now() }
-        });  
+        }).select("+passwordResetToken +passwordResetExpires");  
 
         if(!user){
             return next(

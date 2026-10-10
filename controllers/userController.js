@@ -112,7 +112,6 @@ const getAllUsers = async(req, res, next) => {
         }
 
         const users = await User.find(filter)
-            .select("-password")
             .skip(skip)
             .limit(limit)
             .sort({
@@ -141,7 +140,7 @@ const getAllUsers = async(req, res, next) => {
 const getUserById = async (req, res, next) => {
     try {    
         const id = req.params.id;
-        const user = await User.findById(id).select("-password");
+        const user = await User.findById(id);
     
         if(!user){
             return next(
@@ -170,7 +169,7 @@ const updateUserById = async(req, res, next) => {
                 returnDocument : "after",
                 runValidators : true
             }
-        ).select("-password");
+        )
 
         if(!newUser){
             return next(
@@ -205,7 +204,8 @@ const deleteUserById = async(req, res, next) => {
 
         res.status(200).json({
             status : "success",  
-            message : "user deleted successfully"
+            message : "user deleted successfully",
+            user
         });
 
     } catch (error) {
@@ -230,7 +230,7 @@ const updateUserRole = async (req, res, next) => {
                 returnDocument : "after",
                 runValidators : true
             }
-        ).select("-password");
+        );
 
         if(!user){
             return next(
@@ -274,7 +274,11 @@ const updateAccountStatus = async(req, res, next) => {
         res.status(200).json({
             status : "success",
             message : "user status updated successfully",
-            user
+            user: {
+                _id : user._id,
+                email : user.email,
+                status : user.status 
+            }
         })
 
         
@@ -287,7 +291,7 @@ const updateChangePassword = async(req, res, next) => {
     try {
         const {currentPassword, newPassword} = req.body;
 
-        const user = await User.findById(req.user.userId);
+        const user = await User.findById(req.user.userId).select("+password");
 
         if (!user) {
             return next(new AppError("User not found", 404));

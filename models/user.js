@@ -11,7 +11,8 @@ const userSchema = new mongoose.Schema({
     password: {
         type : String,
         required : true,
-        minlength : 6
+        minlength : 6,
+        select: false
     },
     role: {
         type : String,
@@ -25,11 +26,13 @@ const userSchema = new mongoose.Schema({
     },
     passwordResetToken: {
         type: String,
-        default: undefined
+        default: undefined,
+        select: false
     },
     passwordResetExpires: {
         type: Date,
-        default: undefined
+        default: undefined,
+        select: false
     }
 }, {
     timestamps: true
