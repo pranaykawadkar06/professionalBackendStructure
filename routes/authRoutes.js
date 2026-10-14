@@ -26,4 +26,5 @@ router.post("/forgot-password", validateEmailField, forgotPassword);
 
 router.post("/reset-password/:token", validatePasswordField, resetPassword);
 
+
 export default router;

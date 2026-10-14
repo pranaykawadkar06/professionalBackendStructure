@@ -9,6 +9,8 @@ import validateUpdateUser from "../middleware/validateUpdateUser.js";
 import validateUpdateUserRole from "../middleware/validateUpdateUserRole.js";
 import validateUpdateAccountStatus from "../middleware/validateUpdateAccountStatus.js";
 import validateChangePassword from "../middleware/validateChangePassword.js";
+import upload from "../middleware/upload.js";
+import {uploadImage} from "../controllers/uploadController.js"
 
 const router = express.Router();
 
@@ -27,5 +29,7 @@ router.patch("/:id/role", authMiddleware, roleMiddleware("admin"), validateObjec
 router.patch("/:id/status", authMiddleware, roleMiddleware("admin"), validateObjectId, validateUpdateAccountStatus, updateAccountStatus)
 
 router.patch("/change-password", authMiddleware, validateChangePassword, updateChangePassword);
+
+router.post("/upload", authMiddleware, upload.single("image"), uploadImage);
 
 export default router;

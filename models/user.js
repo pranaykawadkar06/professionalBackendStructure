@@ -24,6 +24,16 @@ const userSchema = new mongoose.Schema({
         enum : ["active", "blocked"],
         default : "active"
     },
+    avatar: {
+        url: {
+            type: String,
+            default: ""
+        },
+        publicId: {
+            type: String,
+            default: ""
+        }
+    },
     passwordResetToken: {
         type: String,
         default: undefined,
