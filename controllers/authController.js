@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 import User from "../models/user.js";
 import AppError from "../utils/AppError.js";
 import crypto from "node:crypto"
+import sendEmail from "../utils/sendEmail.js";
 
 const signup = async (req, res, next) => {
     try {
@@ -163,18 +164,45 @@ const forgotPassword = async(req, res, next) => {
             .createHash("sha256")
             .update(resetToken)
             .digest("hex")
-
+            
         user.passwordResetToken = hashedToken;
         user.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
         await user.save();
 
-        const resestURL = `http://localhost:3000/reset-password/${resetToken}`;
+        const resetURL = `http://localhost:3000/reset-password/${resetToken}`;
+
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: "Password Reset Request",
+                message: `You requested a password reset.
+                
+                Use the following link to reset your password:
+                ${resetURL}
+
+                This link expires in 10 minutes.
+
+                If you did not request this, please ignore this email.`
+            })
+
+        } catch (error) {
+            user.passwordResetToken = undefined;
+            user.passwordResetExpires = undefined;
+
+            try {
+                await user.save();
+            } catch (cleanupError) {
+                console.error("Failed to clear reset token:", cleanupError.message);
+            }
+            return next(
+                new AppError("Unable to send password reset email. Please try again later.", 500)
+            )
+        }
 
         res.status(200).json({
             status: "success",
-            message: "password reset link generated",
-            resestURL
+            message: "password reset link sent to your email",
         })
 
     } catch (error) {

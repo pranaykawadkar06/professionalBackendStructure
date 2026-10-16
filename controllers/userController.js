@@ -2,14 +2,21 @@ import User from "../models/user.js";
 import AppError from "../utils/AppError.js";
 import bcrypt from "bcrypt"
 
-const profile = (req, res, next) => {
-    res.status(200).json(
-        {
-            message : "welcome to profile section",
-            email : req.user.email,
-            role : req.user.role
+const profile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.userId);
+
+        if (!user) {
+            return next(new AppError("User not found", 404));
         }
-    );
+
+        res.status(200).json({
+            status: "success",
+            user
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 
