@@ -9,7 +9,6 @@ import validatePasswordField from "../middleware/validatePasswordField.js";
 import validateEmailField from "../middleware/validateEmailField.js";
 import loginLimiter from "../middleware/loginLimiter.js";
 import signupLimiter from "../middleware/signupLimiter.js";
-import AppError from "../utils/AppError.js";
 
 const router = express.Router();
 

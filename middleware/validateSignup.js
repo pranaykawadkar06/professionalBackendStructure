@@ -1,6 +1,18 @@
 import AppError from "../utils/AppError.js";
 
 const validateSignup = (req, res, next) => {
+
+    const allowedFields = ["email", "password"];
+    
+    for (const field of Object.keys(req.body)) {
+        if(!allowedFields.includes(field)){
+            return next(
+                new AppError(`Invalid field: ${field}`, 400)
+            );
+        }
+        
+    }
+
     const { email, password } = req.body;
 
     if (!email || !password) {

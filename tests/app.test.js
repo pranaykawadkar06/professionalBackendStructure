@@ -64,16 +64,29 @@ test("signup route should reject invalid fields", async () => {
     expect(response.body.message).toBe("Invalid email format");
 })
 
-// test("signup should reject a short password", async () => {
-//     const response = await request(app)
-//         .post("/signup")
-//         .send({
-//             email: "pranay@example.com",
-//             password: "123"
-//         });
+test("signup should reject a short password", async () => {
+    const response = await request(app)
+        .post("/signup")
+        .send({
+            email: "pranay@example.com",
+            password: "123"
+        });
 
-//     expect(response.statusCode).toBe(400);
-//     expect(response.body.message).toBe(
-//         "password must be of minimum 6 length"
-//     );
-// });
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe(
+        "password must be of minimum 6 length"
+    );
+});
+
+test("login should reject invalid fields", async () => {
+    const response = await request(app)
+        .post("/login")
+        .send({
+            email: "pranaykawadkar2006@gmail.com",
+            password : "pranay@2006",
+            role: "user"
+        })
+
+        expect(response.statusCode).toBe(400);
+});
+
